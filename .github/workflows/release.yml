@@ -40,37 +40,33 @@ jobs:
                   echo "path=$IMAGE_PATH" >> $GITHUB_OUTPUT
                   echo "size=$IMAGE_SIZE" >> $GITHUB_OUTPUT
 
-            - name: Compress image
+            - name: Prepare image for upload
               run: |
                   # Copy image out of read-only Nix store
                   mkdir -p dist
                   cp result/nixos.qcow2 dist/kyun-nixos-${{ github.ref_name }}.qcow2
 
-                  # Compress the image
-                  cd dist
-                  xz -9 -T0 -v kyun-nixos-${{ github.ref_name }}.qcow2
-
                   # Generate checksum
-                  sha256sum kyun-nixos-${{ github.ref_name }}.qcow2.xz > kyun-nixos-${{ github.ref_name }}.qcow2.xz.sha256
+                  cd dist
+                  sha256sum kyun-nixos-${{ github.ref_name }}.qcow2 > kyun-nixos-${{ github.ref_name }}.qcow2.sha256
 
             - name: Upload image to release
               uses: softprops/action-gh-release@v1
               if: github.event_name == 'release'
               with:
                   files: |
-                      dist/kyun-nixos-${{ github.ref_name }}.qcow2.xz
-                      dist/kyun-nixos-${{ github.ref_name }}.qcow2.xz.sha256
+                      dist/kyun-nixos-${{ github.ref_name }}.qcow2
+                      dist/kyun-nixos-${{ github.ref_name }}.qcow2.sha256
                   body: |
                       ## NixOS Cloud Image for Kyun.host
 
-                      **Image size:** ${{ steps.image-info.outputs.size }} (uncompressed)
+                      **Image size:** ${{ steps.image-info.outputs.size }}
 
                       ### Installation
 
-                      1. Download `kyun-nixos-${{ github.ref_name }}.qcow2.xz`
-                      2. Verify checksum: `sha256sum -c kyun-nixos-${{ github.ref_name }}.qcow2.xz.sha256`
-                      3. Decompress: `xz -d kyun-nixos-${{ github.ref_name }}.qcow2.xz`
-                      4. Upload `kyun-nixos-${{ github.ref_name }}.qcow2` to kyun.host dashboard
+                      1. Download `kyun-nixos-${{ github.ref_name }}.qcow2`
+                      2. Verify checksum: `sha256sum -c kyun-nixos-${{ github.ref_name }}.qcow2.sha256`
+                      3. Upload `kyun-nixos-${{ github.ref_name }}.qcow2` to kyun.host dashboard
 
                       ### Features
                       - NixOS 24.11
@@ -78,6 +74,7 @@ jobs:
                       - Static networking (IPv4/IPv6)
                       - QEMU guest agent
                       - BTRFS with zstd compression
+                      - Disk device: /dev/sda (SCSI)
 
                       See [README.md](https://github.com/${{ github.repository }}/blob/main/README.md) for full documentation.
               env:
@@ -89,6 +86,6 @@ jobs:
               with:
                   name: kyun-nixos-image
                   path: |
-                      dist/kyun-nixos-*.qcow2.xz
-                      dist/kyun-nixos-*.qcow2.xz.sha256
+                      dist/kyun-nixos-${{ github.ref_name }}.qcow2
+                      dist/kyun-nixos-${{ github.ref_name }}.qcow2.sha256
                   retention-days: 30
