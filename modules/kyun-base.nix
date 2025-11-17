@@ -42,6 +42,7 @@
   ];
 
   # Kernel modules for QEMU/KVM virtio drivers
+  # Kyun.host uses virtio-scsi, so the disk appears as /dev/sda but uses virtio
   boot.initrd.availableKernelModules = [
     "ata_piix"
     "uhci_hcd"
@@ -49,8 +50,10 @@
     "virtio_blk"
     "virtio_scsi"
     "virtio_net"
+    "virtio_ring"
     "sd_mod"
     "sr_mod"
+    "scsi_mod"
   ];
 
   # Enable BTRFS support
