@@ -1,3 +1,5 @@
+#WARNING THIS IS CURRENTLY UNTESTED AND SHOULD NOT BE USED
+
 # NixOS Cloud Image for Kyun.host
 
 A production-ready NixOS qcow2 cloud image builder for [kyun.host](https://kyun.host) VPS hosting with full cloud-init support.
