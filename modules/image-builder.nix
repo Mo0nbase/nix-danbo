@@ -14,7 +14,13 @@
         default = inputs.nixos-generators.nixosGenerate {
           inherit system;
           format = "qcow";
-          modules = [ ../modules/kyun-base.nix ];
+          modules = [
+            ../modules/kyun-base.nix
+            {
+              # Keep image size small (5GB virtual, compresses to ~500MB)
+              virtualisation.diskSize = 5 * 1024;
+            }
+          ];
         };
       };
 
