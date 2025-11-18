@@ -10,30 +10,11 @@
     }:
     {
       packages = {
-        # Build the qcow2 image using nixos-generators
+        # Minimal qcow2 image - let nixos-generators use its defaults
         default = inputs.nixos-generators.nixosGenerate {
           inherit system;
-
-          # Use qcow2 format for cloud/VPS providers
           format = "qcow";
-
-          # Use our NixOS configuration
-          modules = [
-            ../modules/kyun-base.nix
-            {
-              # Override some settings for image generation
-              system.stateVersion = "24.11";
-
-              # Ensure the image is bootable
-              boot.loader.grub.device = "/dev/vda";
-
-              # Set a reasonable disk size
-              virtualisation.diskSize = 10 * 1024; # 10GB
-
-              # Don't set nixpkgs.config, let nixos-generators handle it
-              nixpkgs.config = lib.mkForce { };
-            }
-          ];
+          modules = [ ../modules/kyun-base.nix ];
         };
       };
 
