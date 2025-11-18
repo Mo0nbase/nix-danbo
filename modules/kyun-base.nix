@@ -69,10 +69,11 @@
   security.sudo.wheelNeedsPassword = lib.mkDefault false;
   security.sudo.execWheelOnly = lib.mkDefault false;
 
-  # Networking - let cloud-init handle it
+  # Networking - cloud-init generates systemd-networkd config files with static IPs
+  # Enable systemd-networkd to apply cloud-init's network configuration
   networking.useDHCP = false;
-  networking.useNetworkd = false;
-  systemd.network.enable = lib.mkForce false;
+  networking.useNetworkd = true;
+  systemd.network.enable = true;
 
   # Minimal firewall
   networking.firewall.enable = true;
