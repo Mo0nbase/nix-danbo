@@ -17,8 +17,8 @@
           modules = [
             ../modules/kyun-base.nix
             {
-              # 3GB virtual disk - enough for NixOS closure, compresses under 2GB
-              virtualisation.diskSize = 3 * 1024;
+              # 10GB virtual disk (compresses to ~600MB-1GB actual file size)
+              virtualisation.diskSize = 10 * 1024;
             }
           ];
         };
