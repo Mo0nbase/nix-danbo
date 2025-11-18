@@ -25,9 +25,9 @@
     device = lib.mkForce "/dev/sda";
   };
 
-  # Root filesystem - Kyun.host uses /dev/sda1
-  fileSystems."/" = lib.mkForce {
-    device = "/dev/sda1";
+  # Root filesystem - let nixos-generators determine the device
+  # The /dev/sda1 assumption may be wrong
+  fileSystems."/" = lib.mkDefault {
     fsType = "ext4";
     autoResize = true;
   };
