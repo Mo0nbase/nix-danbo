@@ -27,9 +27,7 @@
           kyun-cloud-init = nixpkgs.lib.nixosSystem {
             system = "x86_64-linux";
             modules = [
-              inputs.disko.nixosModules.disko
               ./modules/kyun-base.nix
-              ./modules/disk-config.nix
             ];
           };
         };

@@ -31,14 +31,24 @@
     };
   };
 
-  # Bootloader - disko configures GRUB automatically
-  # boot.loader.grub is handled by disko
+  # Bootloader configuration for BIOS boot
+  boot.loader.grub = {
+    enable = true;
+    device = "nodev"; # make-disk-image will set this correctly
+  };
+
+  boot.loader.timeout = 3;
 
   # Enable serial console for headless operation and disable predictable interface names
   boot.kernelParams = [
     "console=tty0"
     "console=ttyS0,115200"
     "net.ifnames=0"
+    "earlyprintk=serial,ttyS0,115200"
+    "debug"
+    "loglevel=7"
+    "initcall_debug"
+    "boot.shell_on_fail"
   ];
 
   # Kernel modules for QEMU/KVM virtio drivers
@@ -56,11 +66,24 @@
     "scsi_mod"
   ];
 
-  # Enable BTRFS support
-  boot.supportedFilesystems = [ "btrfs" ];
+  # Enable required filesystems
+  boot.supportedFilesystems = [ "ext4" ];
 
   # No swap by default
   swapDevices = [ ];
+
+  # Filesystem configuration for the image
+  # make-disk-image will create these, but we need to declare them
+  fileSystems."/" = {
+    device = "/dev/disk/by-label/nixos";
+    fsType = "ext4";
+    autoResize = true;
+  };
+
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-label/boot";
+    fsType = "ext4";
+  };
 
   # Enable QEMU guest agent for VPS dashboard features
   services.qemuGuest.enable = true;

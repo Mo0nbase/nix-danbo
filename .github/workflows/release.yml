@@ -20,33 +20,18 @@ jobs:
               uses: actions/checkout@v4
 
             - name: Install Nix
-              uses: DeterminateSystems/nix-installer-action@main
+              uses: cachix/install-nix-action@v25
               with:
-                  extra-conf: |
+                  extra_nix_config: |
                       experimental-features = nix-command flakes
 
-            - name: Setup Nix cache
-              uses: DeterminateSystems/magic-nix-cache-action@main
-
-            - name: Build qcow2 image
+            - name: Build and prepare image
               run: |
                   nix build .#default -L
 
-            - name: Get image info
-              id: image-info
-              run: |
-                  IMAGE_PATH=$(readlink -f result/nixos.qcow2)
-                  IMAGE_SIZE=$(du -h "$IMAGE_PATH" | cut -f1)
-                  echo "path=$IMAGE_PATH" >> $GITHUB_OUTPUT
-                  echo "size=$IMAGE_SIZE" >> $GITHUB_OUTPUT
-
-            - name: Prepare image for upload
-              run: |
-                  # Copy image out of read-only Nix store
+                  # Copy image out of read-only Nix store and create checksum
                   mkdir -p dist
                   cp result/nixos.qcow2 dist/kyun-nixos-${{ github.ref_name }}.qcow2
-
-                  # Generate checksum
                   cd dist
                   sha256sum kyun-nixos-${{ github.ref_name }}.qcow2 > kyun-nixos-${{ github.ref_name }}.qcow2.sha256
 
@@ -60,23 +45,22 @@ jobs:
                   body: |
                       ## NixOS Cloud Image for Kyun.host
 
-                      **Image size:** ${{ steps.image-info.outputs.size }}
-
                       ### Installation
 
                       1. Download `kyun-nixos-${{ github.ref_name }}.qcow2`
                       2. Verify checksum: `sha256sum -c kyun-nixos-${{ github.ref_name }}.qcow2.sha256`
-                      3. Upload `kyun-nixos-${{ github.ref_name }}.qcow2` to kyun.host dashboard
+                      3. Upload to kyun.host dashboard
 
                       ### Features
                       - NixOS 24.11
-                      - Full cloud-init support
+                      - Cloud-init support (NoCloud datasource via /dev/sr1)
                       - Static networking (IPv4/IPv6)
                       - QEMU guest agent
-                      - BTRFS with zstd compression
-                      - Disk device: /dev/sda (SCSI)
+                      - ext4 filesystem
+                      - BIOS boot (GPT/hybrid partitioning)
+                      - Serial console enabled (ttyS0)
 
-                      See [README.md](https://github.com/${{ github.repository }}/blob/main/README.md) for full documentation.
+                      See [README.md](https://github.com/${{ github.repository }}/blob/main/README.md) for documentation.
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

@@ -23,8 +23,8 @@
           # Disk size (10GB)
           diskSize = 10 * 1024;
 
-          # Partition table type
-          partitionTableType = "legacy";
+          # Partition table type - use hybrid for better compatibility
+          partitionTableType = "hybrid";
 
           # Install bootloader
           installBootLoader = true;
@@ -34,6 +34,10 @@
 
           # Copy the system closure to the image
           copyChannel = false;
+
+          # Set the root filesystem - make-disk-image will create it
+          # This overrides disko's filesystem config
+          fsType = "ext4";
         };
       };
 
