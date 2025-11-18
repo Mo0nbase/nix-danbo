@@ -37,8 +37,8 @@ jobs:
 
             - name: Build and prepare image
               run: |
-                  # Build from scratch
-                  nix build .#default -L --no-link --rebuild
+                  # Build from scratch - rebuild forces redownload of all dependencies
+                  nix build .#default -L --option substitute false --max-jobs 1
 
                   # Copy image out of read-only Nix store and create checksum
                   mkdir -p dist
