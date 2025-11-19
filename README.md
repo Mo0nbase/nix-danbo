@@ -1,10 +1,22 @@
 <p align="center">
-  <img width="79" height="20" alt="danbo" src="https://github.com/user-attachments/assets/e9638863-e792-4923-920f-4f89627b07cd" />
+  <img src="./assets/danbo.png" 
+       alt="Danbo logo"
+       style="image-rendering: pixelated;
+              filter: drop-shadow(0 0 30px #ff77ff) drop-shadow(0 0 60px #ff77ff);
+              width: 512px;
+              max-width: 96%;
+              height: auto;" />
 </p>
 
 [![NixOS Flake](https://img.shields.io/badge/NixOS-Flake-blue?logo=nixos&logoColor=white)](https://github.com/Mo0nbase/nix-danbo)
 [![Latest Release](https://img.shields.io/github/v/release/Mo0nbase/your-repo?label=Latest%20Release&style=flat-square)](https://github.com/Mo0nbase/nix-danbo/releases)
 [![Downloads](https://img.shields.io/github/downloads/Mo0nbase/nix-danbo/total?style=flat-square)](https://github.com/Mo0nbase/nix-danbo/releases)
+
+<p align="center">
+  <a href="https://trocador.app/anonpay?ticker_to=xmr&network_to=Mainnet&address=86sk661f7XTNFCTmjtYWL8FL6mxdmVZneC1dF5Ct9YtmBq1C4DS7ZNPDvwfuPXw9vhG4SNpEU9LJC8LpVTe3qN8mCxwXVC5&ref=sqKNYGZbRl&direct=True&name=Mo0nbase&description=nix-danbo+%F0%9F%A4%8D+monero">
+    <img src="https://img.shields.io/badge/Donate-Monero-ff6600?logo=monero&logoColor=white&style=for-the-badge" alt="Donate Monero"/>
+  </a>
+</p>
 
 **Minimal NixOS cloud image for [kyun.host](https://kyun.host) danbo!**
 
