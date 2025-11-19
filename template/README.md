@@ -1,32 +1,44 @@
 # NixOS Configuration Template for Kyun.host
 
-This template provides a minimal NixOS configuration for managing your kyun.host server after the initial cloud-init bootstrap.
+This template provides a minimal NixOS host configuration for managing your kyun.host server after the initial cloud-init bootstrap.
+
+**Assumption**: You already have a NixOS flake for managing your systems. This template gives you the host-specific configuration to add to your flake.
 
 ## Quick Start
 
 1. **After deploying the nixos-danbo image to kyun.host**, SSH into your server
-2. **Clone this template** to your server or local machine (wherever your host flake is located):
+2. **Add this template to your existing NixOS flake**:
 
 ```bash
-# On your server
-mkdir -p /etc/nixos
-cd /etc/nixos
+# In your existing NixOS config repo (local machine or server)
+mkdir -p hosts/kyun
+cd hosts/kyun
 
-# Copy these files
+# Download the template files
 curl -O https://raw.githubusercontent.com/Mo0nbase/nixos-danbo/main/template/danbo.nix
 curl -O https://raw.githubusercontent.com/Mo0nbase/nixos-danbo/main/template/hardware.nix
-
 ```
 
-3. **Customize** `danbo.nix` with your needs
-4. **Apply** your configuration:
+3. **Add the host to your flake.nix**:
+
+```nix
+nixosConfigurations.kyun = nixpkgs.lib.nixosSystem {
+  system = "x86_64-linux";
+  modules = [
+    ./hosts/kyun/danbo.nix
+  ];
+};
+```
+
+4. **Customize** `danbo.nix` with your needs
+5. **Deploy** your configuration:
 
 ```bash
-# If your flake is managed remotely
-sudo nixos-rebuild switch --flake .#danbo --target-host root@your-danbo-ip
+# From your local machine
+nixos-rebuild switch --flake .#kyun --target-host root@your-server
 
-# If you cloned your configuration flake to your danbo
-sudo nixos-rebuild switch --flake .#danbo
+# Or on the server itself (if you cloned your flake there)
+sudo nixos-rebuild switch --flake /etc/nixos#kyun
 ```
 
 ## What's Included
@@ -54,7 +66,7 @@ The base image uses **cloud-init** for initial bootstrap:
 - Runs on first boot only
 
 After bootstrap, **you manage the system with NixOS**:
-- Networking configuration can be overridden in `configuration.nix`
+- Networking configuration can be overridden in `danbo.nix`
 - Add users, packages, services as needed
 - Cloud-init becomes inactive after first boot
 
@@ -134,13 +146,13 @@ nixos-rebuild switch --flake .#kyun --target-host root@your-server.com
 ### On Server
 ```bash
 # Edit configuration
-sudo vim /etc/nixos/configuration.nix
+sudo vim /etc/nixos/hosts/kyun/danbo.nix
 
 # Apply changes
-sudo nixos-rebuild switch --flake /etc/nixos#danbo
+sudo nixos-rebuild switch --flake /etc/nixos#kyun
 
 # Test before switching
-sudo nixos-rebuild test --flake /etc/nixos#danbo
+sudo nixos-rebuild test --flake /etc/nixos#kyun
 ```
 
 ## Troubleshooting

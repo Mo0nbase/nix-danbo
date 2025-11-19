@@ -251,6 +251,39 @@ MIT License - see [LICENSE](LICENSE) file for details
 - [Kyun.host Documentation](https://kyun.host/docs)
 - [Disko Documentation](https://github.com/nix-community/disko)
 
+## User Configuration Template
+
+After deploying the nixos-danbo image, you'll want to manage your system with NixOS configuration. We provide a minimal host template in the `template/` directory that you can add to your existing NixOS flake:
+
+- **`danbo.nix`** - Minimal host configuration with examples
+- **`hardware.nix`** - Hardware config matching kyun.host environment
+- **`README.md`** - Complete usage guide
+
+**Assumption**: You already have a NixOS flake for managing your systems.
+
+### Quick Start with Template
+
+```bash
+# In your existing NixOS config repo
+mkdir -p hosts/kyun
+cd hosts/kyun
+
+# Download the template files
+curl -O https://raw.githubusercontent.com/Mo0nbase/nixos-danbo/main/template/danbo.nix
+curl -O https://raw.githubusercontent.com/Mo0nbase/nixos-danbo/main/template/hardware.nix
+
+# Add to your flake.nix:
+# nixosConfigurations.kyun = nixpkgs.lib.nixosSystem {
+#   system = "x86_64-linux";
+#   modules = [ ./hosts/kyun/danbo.nix ];
+# };
+
+# Deploy to your server
+nixos-rebuild switch --flake .#kyun --target-host root@your-server
+```
+
+See [`template/README.md`](template/README.md) for detailed documentation.
+
 ## Support
 
 For issues or questions:
