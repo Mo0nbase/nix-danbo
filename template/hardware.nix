@@ -20,7 +20,7 @@
   # Bootloader - matches cloud-init image
   boot.loader.grub = {
     enable = true;
-    device = "/dev/sda";
+    device = lib.mkForce "/dev/sda";
   };
 
   # Kernel parameters - keep these for cloud compatibility
@@ -41,8 +41,8 @@
   ];
 
   # Root filesystem - autoResize important for cloud images
-  fileSystems."/" = lib.mkDefault {
-    device = "/dev/sda1";
+  fileSystems."/" = {
+    device = lib.mkDefault "/dev/disk/by-label/nixos";
     fsType = "ext4";
     autoResize = true;
   };
